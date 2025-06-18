@@ -295,18 +295,28 @@ fun ChatListScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            contentPadding = innerPadding
-        ) {
-            items(previews) { chat ->
-                ChatListItem(
-                    preview = chat,
-                    onClick = {
-                        navController.navigate(
-                            Screen.Chat.routeWithChatId(chat.chatId)
-                        )
-                    }
-                )
+        if (previews.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "You have no chats yet")
+            }
+        }
+        else {
+            LazyColumn(
+                contentPadding = innerPadding
+            ) {
+                items(previews) { chat ->
+                    ChatListItem(
+                        preview = chat,
+                        onClick = {
+                            navController.navigate(
+                                Screen.Chat.routeWithChatId(chat.chatId)
+                            )
+                        }
+                    )
+                }
             }
         }
     }
