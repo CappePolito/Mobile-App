@@ -433,8 +433,8 @@ class FirestoreTravelRepository(
         val travelTitle = travelSnapshot.getString("title") ?: "un viaggio"
 
         // Crea messaggio in base all'esito
-        val status = if (enabled) "accettata" else "rifiutata"
-        val message = "La tua candidatura a \"$travelTitle\" è stata $status"
+        val status = if (enabled) "accepted" else "rejected"
+        val message = "Your application to \"$travelTitle\" was $status"
 
         // Aggiungi notifica all’utente candidato
         val notification = mapOf(
@@ -505,7 +505,7 @@ class FirestoreTravelRepository(
 
         // Aggiungi notifica all’owner
         val notification = mapOf(
-            "message" to "${participant.username} si è candidato al tuo viaggio!",
+            "message" to "${participant.username} applied to participate to your travel",
             "timestamp" to Timestamp.now(),
             "read" to false,
             "type" to "application",
@@ -682,7 +682,7 @@ class FirestoreTravelRepository(
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
         val notification = mapOf(
-            "message" to "Nuova recensione al tuo viaggio!",
+            "message" to "New review for your travel prposal!",
             "timestamp" to Timestamp.now(),
             "read" to false,
             "type" to "travel_review",

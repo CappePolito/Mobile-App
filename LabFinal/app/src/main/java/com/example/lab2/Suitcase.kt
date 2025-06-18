@@ -74,8 +74,8 @@ fun PackingScreen(
                     Text("OK")
                 }
             },
-            title = { Text("Selezione necessaria") },
-            text = { Text("Seleziona almeno una voce tra Needs e Activities per procedere.") }
+            title = { Text("Selection Necessary") },
+            text = { Text("Select at least one invoice between Needs and Activities to proceed.") }
         )
     }
 
