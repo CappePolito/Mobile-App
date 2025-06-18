@@ -363,30 +363,27 @@ fun TravelProposalScreen(
 
                 // Information
                 if (!showInfo) {
-                    Row(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                            .padding(top = 8.dp)
                     ) {
-                        Column {
-                            Text(
-                                text = "See more Informations",
-                                style = MaterialTheme.typography.headlineSmall
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "See more Informations",
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
 
                         IconButton(
-                            onClick = { showInfo = !showInfo }
+                            onClick = { showInfo = !showInfo },
+                            modifier = Modifier.align(Alignment.CenterEnd)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.AddCircleOutline,
                                 contentDescription = "Show the informations"
                             )
                         }
+
                     }
 
                     HorizontalDivider(color = Color(0xFF0B3E28))
