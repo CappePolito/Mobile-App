@@ -826,41 +826,44 @@ fun ProfileScreen(
             FriendsAndAchievementsRow(vm, navController, onNavigateToFriendsList)
 
             //bio section
-            Box(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val configuration = LocalConfiguration.current
-                val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+            if(bio != "") {
 
-                val padding = if (isPortrait) 8.dp else 60.dp
-                //val padding = if (this.maxWidth < this.maxHeight) 8.dp else 36.dp // Portrait vs Landscape logic
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 8.dp, start = padding, end = padding),
-                    horizontalArrangement = Arrangement.Center
+                Box(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Box(
+                    val configuration = LocalConfiguration.current
+                    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+                    val padding = if (isPortrait) 8.dp else 60.dp
+                    //val padding = if (this.maxWidth < this.maxHeight) 8.dp else 36.dp // Portrait vs Landscape logic
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            //.height(55.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0x5860935D))
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFF60935D),
-                                shape = RoundedCornerShape(11.dp)
-                            ),
-                        contentAlignment = Alignment.Center
+                            .padding(top = 8.dp, bottom = 8.dp, start = padding, end = padding),
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = bio,
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                color = Color.Black
-                            ),
-                            modifier = Modifier.padding(16.dp),
-                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                //.height(55.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0x5860935D))
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFF60935D),
+                                    shape = RoundedCornerShape(11.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = bio,
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    color = Color.Black
+                                ),
+                                modifier = Modifier.padding(16.dp),
+                            )
+                        }
                     }
                 }
             }
@@ -1307,66 +1310,86 @@ fun FriendsAndAchievementsRow(
                 .padding(top = 4.dp, bottom = 8.dp, start = padding, end = padding),
             horizontalArrangement = Arrangement.spacedBy(8.dp), //spazio tra i campi
             verticalAlignment = Alignment.CenterVertically
-        ) {Text(
-            text = "Friends",
-            style = MaterialTheme.typography.body1.copy(fontSize = 14.sp),
-            modifier = Modifier.padding(top = 8.dp)
-        )
+        ) {
+            if(resolvedFriends.size != 0) {
+                Text(
+                    text = "Friends",
+                    style = MaterialTheme.typography.body1.copy(fontSize = 14.sp),
+                    modifier = Modifier.padding(top = 8.dp)
+                )
 
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier
-                    //.fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                items(resolvedFriends.take(3)) { (friendId, imageUrl, username) ->
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(Color.Gray)
-                            .clickable {
-                                navController.navigate(Screen.OtherUserProfile.routeWithUserId(friendId))
-                            },
-                        contentAlignment = Alignment.Center
-                    )
-                    {
-                        if (imageUrl != null) {
-                            Image(
-                                painter = rememberAsyncImagePainter(imageUrl),
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            Text(
-                                text = username?.take(2)?.uppercase() ?: friendId.take(2).uppercase(),
-                                color = Color.White,
-                                style = MaterialTheme.typography.body2
-                            )
-                        }
-                    }
-                }
-
-
-                if (resolvedFriends.size > 3) {
-                    item {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier
+                        //.fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                ) {
+                    items(resolvedFriends.take(3)) { (friendId, imageUrl, username) ->
                         Box(
                             modifier = Modifier
                                 .size(36.dp)
                                 .clip(CircleShape)
-                                .background(Color.LightGray)
+                                .background(Color.Gray)
                                 .clickable {
-                                    onNavigateToFriendsList()
+                                    navController.navigate(
+                                        Screen.OtherUserProfile.routeWithUserId(
+                                            friendId
+                                        )
+                                    )
                                 },
                             contentAlignment = Alignment.Center
-                        ) {
-                            Text("+${resolvedFriends.size - 3}", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        )
+                        {
+                            if (imageUrl != null) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(imageUrl),
+                                    contentDescription = null,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                Text(
+                                    text = username?.take(2)?.uppercase() ?: friendId.take(2)
+                                        .uppercase(),
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.body2
+                                )
+                            }
+                        }
+                    }
 
+
+                    if (resolvedFriends.size > 3) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.LightGray)
+                                    .clickable {
+                                        onNavigateToFriendsList()
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "+${resolvedFriends.size - 3}",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp
+                                )
+
+                            }
                         }
                     }
                 }
             }
+            else {
+                Text(
+                    text = "You have no friends yet",
+                    style = MaterialTheme.typography.body1.copy(fontSize = 14.sp),
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.weight(1f))  //mtto l'icona degli achievements tutta a destra
 
 
