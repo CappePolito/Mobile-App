@@ -58,6 +58,7 @@ import java.util.Locale
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun HomePageScreen(
@@ -187,19 +188,34 @@ fun HomePageScreen(
 
                     // Proposals carousel
                     //val proposals = listOf("Proposal 1 description", "Proposal 2 description", "Proposal 3 description", "Proposal 4 description", "Proposal 5 description", "Proposal 6 description", "Proposal 7 description")
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(200.dp)
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(friendsProposals, key = { it.id }) { travel ->
-                            ProposalCard(travel, onClick = onNavigateToTravelProposal)
-
+                    if (friendsProposals.isEmpty()) {
+                        // ← placeholder when empty
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "You don’t have any friends’ trips yet.\nGo make some friends!",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                        }
+                    } else {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(200.dp)
+                                .padding(top = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(friendsProposals, key = { it.id }) { travel ->
+                                ProposalCard(travel, onClick = onNavigateToTravelProposal)
+                            }
                         }
                     }
-
                 }
 
                 //Spacer(modifier = Modifier.height(20.dp))
@@ -211,27 +227,39 @@ fun HomePageScreen(
                     ) {
                         Text(
                             text = "My Proposals",
-                            style = androidx.compose.material3.MaterialTheme.typography.headlineSmall
+                            style = MaterialTheme.typography.headlineSmall
                         )
                     }
-
                     HorizontalDivider(color = Color(0xFF0B3E28))
 
-
-                    // Proposals carousel
-                    //val proposals = listOf("Proposal 1 description", "Proposal 2 description", "Proposal 3 description", "Proposal 4 description", "Proposal 5 description", "Proposal 6 description", "Proposal 7 description")
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(200.dp)
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(myProposals, key = { it.id }) { travel ->
-                            ProposalCard(
-                                travel = travel,
-                                onClick = { travelId -> onNavigateToOwnedTravelProposal(travelId) }
+                    if (myProposals.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "You haven’t created any trips yet.\nTap “+” to start one!",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
                             )
+                        }
+                    } else {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(200.dp)
+                                .padding(top = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(myProposals, key = { it.id }) { travel ->
+                                ProposalCard(
+                                    travel = travel,
+                                    onClick = { id -> onNavigateToOwnedTravelProposal(id) }
+                                )
+                            }
                         }
                     }
                 }
