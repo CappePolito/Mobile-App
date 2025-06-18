@@ -794,7 +794,7 @@ class AddTravelViewModel (
         val ageDefault = 18f..100f
         return startDate != null && endDate != null
                 && groupSize.isNotBlank()
-                && ageRange != ageDefault
+                //&& ageRange != ageDefault
     }
 
     fun isStep3Valid(): Boolean {
@@ -802,7 +802,7 @@ class AddTravelViewModel (
     }
 
     fun isStep4Valid(): Boolean {
-        return itineraryDescriptions.all { it.isNotBlank() }
+        return itineraryDescriptions.any { it.isNotBlank() }
     }
 
     fun isStep5Valid(): Boolean {
