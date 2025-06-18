@@ -1768,41 +1768,43 @@ fun ImageAndTagsRow(
         horizontalArrangement = Arrangement.Center
     ) {
 
+        val hashtags = listOf(
+            hashtag1 to vm::updateHashtag1,
+            hashtag2 to vm::updateHashtag2,
+            hashtag3 to vm::updateHashtag3
+        ).filter { it.first.isNotBlank() } // 👈 filtra solo gli hashtag non vuoti
 
-        FlowRow(
-            modifier = Modifier.padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-
-            listOf(
-                hashtag1 to vm::updateHashtag1,
-                hashtag2 to vm::updateHashtag2,
-                hashtag3 to vm::updateHashtag3
-            ).forEach { (hashtag, _) ->
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Color(0xFF60935D),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .width(IntrinsicSize.Min)
-                        .padding(horizontal = 4.dp, vertical = 2.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    BasicTextField(
-                        value = hashtag,
-                        onValueChange = {},
-                        enabled = false,
-                        textStyle = TextStyle(
-                            fontSize = 12.sp,
-                            color = Color.White
-                        ),
-                        singleLine = true,
+        if (hashtags.isNotEmpty()) {
+            FlowRow(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                hashtags.forEach { (hashtag, _) ->
+                    Box(
                         modifier = Modifier
+                            .background(
+                                color = Color(0xFF60935D),
+                                shape = RoundedCornerShape(12.dp)
+                            )
                             .width(IntrinsicSize.Min)
-                            .padding(4.dp)
-                    )
+                            .padding(horizontal = 4.dp, vertical = 2.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        BasicTextField(
+                            value = hashtag,
+                            onValueChange = {},
+                            enabled = false,
+                            textStyle = TextStyle(
+                                fontSize = 12.sp,
+                                color = Color.White
+                            ),
+                            singleLine = true,
+                            modifier = Modifier
+                                .width(IntrinsicSize.Min)
+                                .padding(4.dp)
+                        )
+                    }
                 }
             }
         }
