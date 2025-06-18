@@ -334,7 +334,7 @@ fun TravelProposalScreen(
                 HorizontalDivider(color = Color(0xFF0B3E28))
 
                 //Organizer
-                OrganizerRow(proposal!!.owner, navController, authVm = authVm )
+                OrganizerRow(proposal!!.owner, navController, authVm = authVm, vm = UserVm )
 
                 HorizontalDivider(color = Color(0xFF0B3E28))
 
@@ -790,7 +790,8 @@ fun OrganizerRow(
     owner: Pair<String, String>,
     navController: NavHostController,
     chatViewModel: ChatViewModel = viewModel(factory = Factory),  // or hiltViewModel()
-    authVm: AuthViewModel
+    authVm: AuthViewModel,
+    vm: ProfileViewModel
 ) {
     val ownerModel by produceState<UserModel?>(initialValue = null, owner.first) {
         value = getUserModelById(owner.first )
@@ -886,30 +887,33 @@ fun OrganizerRow(
 
         Spacer(modifier = Modifier.weight(1f))
 
+        if (owner.first != vm.id) {
 
-        val scope = rememberCoroutineScope()
 
-        IconButton(
-            onClick = {
-                if (authState is AuthViewModel.AuthState.Guest) {
-                    // Guest → force login
-                    navController.navigate(Screen.Login.base)
-                } else {
-                    // Authenticated → do the chat flow
-                    scope.launch {
-                        // 1️⃣ get or create the chat doc
-                        val chatId = chatViewModel.getOrCreateChatWith(owner.first)
-                        // 2️⃣ navigate into your chat screen
-                        navController.navigate(Screen.Chat.routeWithChatId(chatId))
+            val scope = rememberCoroutineScope()
+
+            IconButton(
+                onClick = {
+                    if (authState is AuthViewModel.AuthState.Guest) {
+                        // Guest → force login
+                        navController.navigate(Screen.Login.base)
+                    } else {
+                        // Authenticated → do the chat flow
+                        scope.launch {
+                            // 1️⃣ get or create the chat doc
+                            val chatId = chatViewModel.getOrCreateChatWith(owner.first)
+                            // 2️⃣ navigate into your chat screen
+                            navController.navigate(Screen.Chat.routeWithChatId(chatId))
+                        }
                     }
                 }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Chat,
+                    contentDescription = "Chat With the Organizer",
+                    tint = GreenDivider
+                )
             }
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Chat,
-                contentDescription = "Chat With the Organizer",
-                tint = GreenDivider
-            )
         }
     }
 }
