@@ -99,7 +99,9 @@ private val dateFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 @Composable
 fun SearchScreen(
     navController: NavHostController,
+    authVm: AuthViewModel
 ) {
+    val authState by authVm.authState.collectAsState()
 
     val searchVm: SearchViewModel   = viewModel(factory = Factory)
     val userQuery   by searchVm.query.collectAsState()
@@ -153,9 +155,14 @@ fun SearchScreen(
             RefinedToggle(
                 selectedOption   = selectedTab,
                 onOptionSelected = { tab ->
-                    selectedTab = tab
-                    isSearching = false
-                    setShowFilters(true)
+                    // se il tab è Users e sono Guest, vado al login
+                    if (tab == SearchTab.Users && authState is AuthViewModel.AuthState.Guest) {
+                        navController.navigate(Screen.Login.base)
+                    } else {
+                        selectedTab = tab
+                        isSearching = false
+                        setShowFilters(true)
+                    }
                 }
             )
 
@@ -163,8 +170,16 @@ fun SearchScreen(
                 SearchTab.Users -> {
                     val results by searchVm.searchResults.collectAsState()
                     UserSearchContent(
-                        searchResults  = results,
-                        navController
+                        searchResults = results,
+                        onUserClick = { user ->
+                            // guard anche qui sul singolo tap
+                            if (authState is AuthViewModel.AuthState.Guest) {
+                                navController.navigate(Screen.Login.base)
+                            } else {
+                                navController.navigate("otherUserProfile/${user.id}")
+                            }
+                        },
+                        navController = navController
                     )
                 }
                 SearchTab.Places -> {
@@ -294,6 +309,7 @@ fun RefinedToggle(
 @Composable
 fun UserSearchContent(
     searchResults: List<UserModel>,
+    onUserClick: (UserModel) -> Unit,
     navController: NavHostController
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
