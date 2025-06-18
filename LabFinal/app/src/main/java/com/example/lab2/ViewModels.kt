@@ -1487,9 +1487,8 @@ class ChatListViewModel(
             .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snaps, _ ->
                 val list = snaps?.documents?.mapNotNull { doc ->
-                    val participants = doc.get("participants") as List<String>
-                    val other = participants.first { it != me }
-                    // You’ll want to fetch the other user’s name here (or denormalize it into chats)
+                    val participants = doc.get("participants") as? List<String> ?: return@mapNotNull null
+                    val other = participants.firstOrNull { it != me } ?: return@mapNotNull null
                     val lastMsg = doc.getString("lastMessage") ?: ""
                     val ts = doc.getTimestamp("lastMessageTimestamp")
                     ChatPreview(

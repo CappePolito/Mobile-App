@@ -8,11 +8,13 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -125,6 +127,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -840,7 +843,7 @@ fun ProfileScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(55.dp)
+                            //.height(55.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(Color(0x5860935D))
                             .border(
@@ -2130,6 +2133,23 @@ fun AddReviewDialog(
     }
 }
 
+
+fun bitmapToCacheUri(context: Context, bitmap: Bitmap): Uri {
+    // 1. Create a temp file
+    val cacheFile = File(context.cacheDir, "profile_${System.currentTimeMillis()}.jpg")
+    cacheFile.outputStream().use { out ->
+        // 2. Compress the bitmap to JPEG (adjust quality as you like)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+    }
+    // 3. Get a content:// URI via FileProvider
+    return FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.provider",
+        cacheFile
+    )
+}
+
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EditProfileDialog(
@@ -2143,10 +2163,24 @@ fun EditProfileDialog(
     var showCamera by remember { mutableStateOf(false) }
     var localImageUri by remember { mutableStateOf<Uri?>(null) }
 
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap: Bitmap? ->
+        bitmap?.let {
+            val uri = bitmapToCacheUri(context, it)
+            localImageUri = uri
+            vm.updateImage(uri)
+        }
+    }
+
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) showCamera = true
+    ) { granted ->
+        if (granted) {
+            cameraLauncher.launch()
+        } else {
+            // show rationale or error
+        }
     }
 
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -2230,7 +2264,6 @@ fun EditProfileDialog(
                                         modifier = Modifier.fillMaxSize(),
                                         contentScale = ContentScale.Crop
                                     )
-                                    // … other cases …
                                     else -> Text(initials, style = MaterialTheme.typography.h4, color = Color.White)
                                 }
                             }
@@ -2253,12 +2286,13 @@ fun EditProfileDialog(
                             ) {
                                 DropdownMenuItem(onClick = {
                                     menuExpanded = false
+                                    // check permission, then launch camera
                                     if (ContextCompat.checkSelfPermission(
                                             context,
                                             Manifest.permission.CAMERA
                                         ) == PackageManager.PERMISSION_GRANTED
                                     ) {
-                                        showCamera = true
+                                        cameraLauncher.launch()
                                     } else {
                                         cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                                     }
