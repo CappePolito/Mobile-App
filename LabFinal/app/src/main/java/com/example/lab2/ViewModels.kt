@@ -926,7 +926,7 @@ class AddTravelViewModel (
 
          val saveStart = startDate?.let { Timestamp(it) }
 
-        val saveEnd = startDate?.let { Timestamp(it) }
+        val saveEnd = endDate?.let { Timestamp(it) }
 
         val updatedImages = _imageUris.map {
             TravelImage.UriImage(it.toString())
