@@ -293,7 +293,7 @@ object UserStore {
 
             // 2. Crea notifica
             val notification = mapOf(
-                "message" to "Hai ricevuto una nuova recensione personale!",
+                "message" to "You received a new personal notification!",
                 "timestamp" to Timestamp.now(),
                 "read" to false,
                 "type" to "user_review",

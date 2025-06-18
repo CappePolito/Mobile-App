@@ -150,7 +150,7 @@ class UserRepository(
 
             // 2. Crea notifica per userId2 (che è stato aggiunto da userId1)
             val notification = mapOf(
-                "message" to "Sei stato aggiunto come amico!",
+                "message" to "You have been added as a friend!",
                 "timestamp" to Timestamp.now(),
                 "read" to false,
                 "type" to "friend_added",
@@ -335,7 +335,7 @@ class UserRepository(
 
             // 2. Crea la notifica
             val notification = mapOf(
-                "message" to "Hai ricevuto una nuova recensione!",
+                "message" to "You received a new review!",
                 "timestamp" to Timestamp.now(),
                 "read" to false,
                 "type" to "user_review",
