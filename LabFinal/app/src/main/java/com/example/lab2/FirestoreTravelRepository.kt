@@ -505,7 +505,7 @@ class FirestoreTravelRepository(
 
         // Aggiungi notifica all’owner
         val notification = mapOf(
-            "message" to "${participant.username} applied to participate to your travel",
+            "message" to "There is a new request to participate to your travel",
             "timestamp" to Timestamp.now(),
             "read" to false,
             "type" to "application",

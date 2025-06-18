@@ -843,7 +843,7 @@ fun ProfileScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(55.dp)
+                            //.height(55.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(Color(0x5860935D))
                             .border(
