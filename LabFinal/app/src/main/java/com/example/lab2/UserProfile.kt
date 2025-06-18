@@ -642,10 +642,10 @@ class ProfileViewModel(
             _unlockedIds.value = it
         }
 
-        listOf(1 to "j1", 5 to "j5", 10 to "j10").forEach { (th, id) ->
+        listOf(1 to "j1", 5 to "j2", 10 to "j3").forEach { (th, id) ->
             if (totalCount >= th && !currentUnlocked.contains(id)) addAchievement(id, model.id)
         }
-        listOf(1 to "o1", 5 to "o5", 10 to "o10").forEach { (th, id) ->
+        listOf(1 to "o1", 5 to "o2", 10 to "o3").forEach { (th, id) ->
             if (organized >= th && !currentUnlocked.contains(id)) addAchievement(id, model.id)
         }
         listOf(1 to "f1", 5 to "f2", 10 to "f3").forEach { (th, id) ->
