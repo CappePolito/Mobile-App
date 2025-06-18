@@ -607,7 +607,7 @@ fun RootNavHost(
 
             // Search
             composable(Screen.Search.base) {
-                SearchScreen(navController = navController)
+                SearchScreen(navController = navController, authVm = authVm)
             }
 
 
